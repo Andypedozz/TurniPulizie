@@ -12,7 +12,7 @@ function getData() {
     
     const names = []
     nameTags.forEach(tag => {
-        names.push(tag.value.toLowerCase());
+        names.push(tag.value);
     })
 
     const freeDays = []

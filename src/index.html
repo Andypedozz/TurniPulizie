@@ -15,7 +15,7 @@
     <h2>Dipendenti e Giorni Liberi</h2>
     <div id="giorni-liberi-container">
         <script>
-            function addGiorniLiberi(name, days = []) {
+            function aggiungiDipendente(name, days = []) {
                 const container = document.getElementById('giorni-liberi-container');
                 const div = document.createElement('div');
                 div.classList.add('input-group');
@@ -32,17 +32,17 @@
                 row.remove();
             }
 
-            addGiorniLiberi("Gabri")
-            addGiorniLiberi("Lollo")
-            addGiorniLiberi("Nando")
-            addGiorniLiberi("Anis")
-            addGiorniLiberi("Salama")
-            addGiorniLiberi("Anna")
-            addGiorniLiberi("Giulia")
-            addGiorniLiberi("Valentina")
+            aggiungiDipendente("Gabri")
+            aggiungiDipendente("Lollo")
+            aggiungiDipendente("Nando")
+            aggiungiDipendente("Anis")
+            aggiungiDipendente("Salama")
+            aggiungiDipendente("Anna")
+            aggiungiDipendente("Giulia")
+            aggiungiDipendente("Valentina")
         </script>
     </div>
-    <button type="button" onclick="addGiorniLiberi('')">+ Aggiungi Dipendente</button>
+    <button type="button" onclick="aggiungiDipendente('')">+ Aggiungi Dipendente</button>
   </div>
 
   <!-- Sezione dipendenti fissi -->
