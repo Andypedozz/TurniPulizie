@@ -50,6 +50,19 @@ button:hover {
     background-color: #219150;
 }
 
+a {
+    padding: 8px 12px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+a:hover {
+    background-color: #219150;
+}
+
 .remove-btn {
     background-color: #e74c3c;
 }

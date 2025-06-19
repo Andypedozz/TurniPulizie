@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const path = require("path")
+const fs = require("fs");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -10,7 +11,77 @@ const PORT = 3002;
 
 let turni;
 
-function generaTurni(params) {
+function generaTurniGreedy(params) {
+  const giorniSettimana = ["lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"];
+  const nPersone = params.nPersone;
+  const dipendenti = params.dipendenti;
+  const fisso = params.fisso;
+
+  const turni = {};
+  const giorniPrecedenti = {}; // Per controllare giorni consecutivi
+
+  // Inizializza struttura turni
+  for (const giorno of giorniSettimana) {
+    turni[giorno] = [];
+  }
+
+  // Preprocess: mappa nome → giorni liberi
+  const liberiMap = {};
+  for (const d of dipendenti) {
+    liberiMap[d.nome] = new Set(d.gg_liberi || []);
+  }
+
+  // Inizializza giorni precedenti
+  for (const d of dipendenti) {
+    giorniPrecedenti[d.nome] = null; // Nessun giorno ancora assegnato
+  }
+
+  for (let i = 0; i < giorniSettimana.length; i++) {
+    const giorno = giorniSettimana[i];
+
+    // Step 1: Pre-assegna il dipendente fisso, se questo è il suo giorno
+    if (giorno === fisso.giorno) {
+      turni[giorno].push(fisso.nome);
+      giorniPrecedenti[fisso.nome] = giorno; // segna come assegnato
+    }
+
+    // Step 2: Crea lista candidati validi
+    const candidati = dipendenti
+      .map(d => d.nome)
+      .filter(nome => {
+        // già assegnato oggi?
+        if (turni[giorno].includes(nome)) return false;
+        // ha giorno libero?
+        if (liberiMap[nome].has(giorno)) return false;
+
+        // ha pulito ieri?
+        const giornoPrecedente = giorniSettimana[i - 1];
+        if (giornoPrecedente && turni[giornoPrecedente]?.includes(nome)) return false;
+
+        return true;
+      });
+
+    // Step 3: Aggiungi candidati fino a riempire nPersone
+    for (const nome of candidati) {
+      if (turni[giorno].length < nPersone) {
+        turni[giorno].push(nome);
+        giorniPrecedenti[nome] = giorno;
+      } else {
+        break;
+      }
+    }
+
+    // Step 4: Se mancano persone → errore o placeholder
+    if (turni[giorno].length < nPersone) {
+      turni[giorno].push("🚨 Turno non coperto");
+    }
+  }
+
+  return turni;
+}
+
+
+function generaTurniBacktracking(params) {
     const giorniSettimana = ["lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"];
     const nPersone = params.nPersone;
     const dipendenti = params.dipendenti.map(d => d.nome);
@@ -68,9 +139,11 @@ function generaTurni(params) {
     return turni;
 }
 
+
+
 app.post("/nuoviTurni", (req, res) => {
     const params = req.body;
-    turni = generaTurni(params);
+    turni = generaTurniGreedy(params);
     res.json(turni);
 })
 

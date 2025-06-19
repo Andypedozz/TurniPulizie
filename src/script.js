@@ -87,3 +87,38 @@ function generaTurni() {
         renderData(data);
     })
 }
+
+function jsonToCSV(turniJson) {
+    const righe = [["Giorno", "Persone Assegnate"]]; // intestazioni
+
+    for (const [giorno, persone] of Object.entries(turniJson)) {
+        righe.push([giorno, persone.join(", ")]);
+    }
+
+    // Converti in stringa CSV
+    const csv = righe.map(riga => riga.map(val => `"${val}"`).join(",")).join("\n");
+    return csv;
+}
+
+function downloadCsv(turni) {
+    const url = "/turni";
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type" : "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const csvString = jsonToCSV(data);
+        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "csvContent.csv");
+
+        link.click(); // Trigger download
+        URL.revokeObjectURL(url); // Clean up
+    })
+}
