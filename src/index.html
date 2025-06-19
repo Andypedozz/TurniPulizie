@@ -15,13 +15,13 @@
     <h2>Dipendenti e Giorni Liberi</h2>
     <div id="giorni-liberi-container">
         <script>
-            function aggiungiDipendente(name, days = []) {
+            function aggiungiDipendente(name, days) {
                 const container = document.getElementById('giorni-liberi-container');
                 const div = document.createElement('div');
                 div.classList.add('input-group');
                 div.innerHTML = `
-                    <input type="text" name="nome" placeholder="Nome" value=${name}>
-                    <input type="text" name="giorniLiberi" placeholder="Giorni della settimana liberi (es: lunedì,venerdì)" value=${(days.length > 0)? days : ""}>
+                    <input type="text" name="nome" placeholder="Nome" value=${name || ""}>
+                    <input type="text" name="giorniLiberi" placeholder="Giorni della settimana liberi (es: lunedì,venerdì)" value=${days || ""}>
                     <button type="button" onclick="removeRow(this)" class="remove-btn">-</button>
                 `;
                 container.appendChild(div);
@@ -42,7 +42,7 @@
             aggiungiDipendente("Valentina")
         </script>
     </div>
-    <button type="button" onclick="aggiungiDipendente('')">+ Aggiungi Dipendente</button>
+    <button type="button" onclick="aggiungiDipendente()">+ Aggiungi Dipendente</button>
   </div>
 
   <!-- Sezione dipendenti fissi -->
