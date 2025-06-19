@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generatore Turni Pulizie</title>
+  <link rel="stylesheet" href="../src/style.css">
+</head>
+<body>
+
+  <h1>Gestione Turni Pulizie</h1>
+
+  <!-- Sezione giorni liberi -->
+  <div class="section">
+    <h2>Dipendenti e Giorni Liberi</h2>
+    <div id="giorni-liberi-container">
+        <script>
+            function addGiorniLiberi(name, days) {
+                const container = document.getElementById('giorni-liberi-container');
+                const div = document.createElement('div');
+                div.classList.add('input-group');
+                div.innerHTML = `
+                    <input type="text" name="nome" placeholder="Nome" value=${name}>
+                    <input type="text" name="giorniLiberi" placeholder="Giorni della settimana liberi (es: lunedì, venerdì)" value=${days}>
+                    <button type="button" onclick="removeRow(this)" class="remove-btn">-</button>
+                `;
+                container.appendChild(div);
+            }
+
+            function removeRow(button) {
+                const row = button.parentElement;
+                row.remove();
+            }
+
+            addGiorniLiberi("Gabri","lunedi,sabato,domenica")
+            addGiorniLiberi("Lollo","sabato,domenica")
+            addGiorniLiberi("Nando","lunedi,martedi")
+            addGiorniLiberi("Anis","venerdi,giovedi")
+            addGiorniLiberi("Salama","mercoledi")
+            addGiorniLiberi("Anna","martedi")
+            addGiorniLiberi("Giulia","lunedi")
+            addGiorniLiberi("Valentina","giovedi")
+        </script>
+    </div>
+    <button type="button" onclick="addGiorniLiberi('')">+ Aggiungi Dipendente</button>
+  </div>
+
+  <!-- Sezione dipendenti fissi -->
+  <div class="section">
+    <h2>Dipendente Fisso per Giorno</h2>
+    <div class="input-group">
+      <input id="nomeFisso" type="text" name="nomeFisso" placeholder="Nome">
+      <select id="giornoFisso" name="giornoFisso">
+        <option value="">Seleziona Giorno</option>
+        <option>lunedì</option>
+        <option>martedì</option>
+        <option>mercoledì</option>
+        <option>giovedì</option>
+        <option>venerdì</option>
+        <option>sabato</option>
+        <option>domenica</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section" id="tabella-turni"></div>
+
+  <button onclick="generaTurni()">Genera Turnazione</button>
+  <button>Esporta CSV</button>
+  <script>
+    function getData() {
+        const config = {};
+        const dipendenti = [];
+
+        const nameTags = document.querySelectorAll('[name="nome"]');
+        const ggTags = document.querySelectorAll('[name="giorniLiberi"]');
+        
+        const names = []
+        nameTags.forEach(tag => {
+            names.push(tag.value);
+        })
+
+        const freeDays = []
+        ggTags.forEach(tag => {
+            const days = tag.value.split(",");
+            freeDays.push(days);
+        })
+        
+        for(let i = 0; i < names.length; i++) {
+            dipendenti.push({ nome: names[i], gg_liberi: freeDays[i]})
+        }
+        
+        const dipendenteFisso = document.getElementById("nomeFisso").value;
+        const giornoFisso = document.getElementById("giornoFisso").value;
+        const fisso = {
+            nome : dipendenteFisso,
+            giorno : giornoFisso
+        }
+        
+        config["nPersone"] = 2;
+        config["dipendenti"] = dipendenti;
+        config["fisso"] = fisso;
+        return config;
+    }
+    
+    function renderData(turni) {
+        
+        const section = document.getElementById("tabella-turni");
+        section.innerHTML = "";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = "Tabella Turni Settimanali";
+        section.appendChild(h2);
+
+        const table = document.createElement("table");
+        table.style.width = "100%";
+        table.style.borderCollapse = "collapse";
+
+        const headerRow = document.createElement("tr");
+        headerRow.innerHTML = "<th>Giorno</th><th>Persone Assegnate</th>";
+        table.appendChild(headerRow);
+
+        for (const [giorno, nomi] of Object.entries(turni)) {
+            const row = document.createElement("tr");
+
+            const cellGiorno = document.createElement("td");
+            cellGiorno.textContent = giorno;
+            cellGiorno.style.padding = "8px";
+            cellGiorno.style.border = "1px solid #ccc";
+
+            const cellNomi = document.createElement("td");
+            cellNomi.textContent = nomi.join(", ");
+            cellNomi.style.padding = "8px";
+            cellNomi.style.border = "1px solid #ccc";
+
+            row.appendChild(cellGiorno);
+            row.appendChild(cellNomi);
+            table.appendChild(row);
+        }
+
+        section.appendChild(table);
+    }
+
+    function generaTurni() {
+        const params = getData();
+
+        const url = "/nuoviTurni";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(params)
+        })
+        .then(response => response.json())
+        .then(data => {
+            renderData(data);
+        })
+    }
+  </script>
+</body>
+</html>
