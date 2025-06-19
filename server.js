@@ -11,8 +11,13 @@ const PORT = 3002;
 
 let turni;
 
+function capitalize(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function generaTurniGreedy(params) {
-  const giorniSettimana = ["lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"];
+  const giorniSettimana = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato", "Domenica"];
   const nPersone = params.nPersone;
   const dipendenti = params.dipendenti;
   const fisso = params.fisso;
@@ -73,7 +78,7 @@ function generaTurniGreedy(params) {
 
     // Step 4: Se mancano persone → errore o placeholder
     if (turni[giorno].length < nPersone) {
-      turni[giorno].push("🚨 Turno non coperto");
+      turni[giorno].push("Turno non coperto");
     }
   }
 

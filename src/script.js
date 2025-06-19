@@ -1,3 +1,8 @@
+function capitalize(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function getData() {
     const config = {};
     const dipendenti = [];
@@ -7,13 +12,14 @@ function getData() {
     
     const names = []
     nameTags.forEach(tag => {
-        names.push(tag.value);
+        names.push(tag.value.toLowerCase());
     })
 
     const freeDays = []
     ggTags.forEach(tag => {
         const days = tag.value.split(",");
-        freeDays.push(days);
+        const upperDays = days.map(day => capitalize(day)); 
+        freeDays.push(upperDays);
     })
     
     for(let i = 0; i < names.length; i++) {
