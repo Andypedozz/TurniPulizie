@@ -1,65 +1,63 @@
+/* --- STILI BASE (mobile first) --- */
 body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
-    padding: 20px;
+    padding: 15px;
     color: #333;
+    margin: 0;
 }
 
 h1 {
     text-align: center;
     color: #2c3e50;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
 }
 
 .section {
     background: #fff;
-    padding: 20px;
-    margin-bottom: 30px;
+    padding: 15px;
+    margin-bottom: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
 .section h2 {
     margin-top: 0;
+    font-size: 1.2rem;
     color: #2980b9;
+    margin-bottom: 1rem;
 }
 
 .input-group {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    margin-bottom: 10px;
-    align-items: center;
+    margin-bottom: 15px;
 }
 
-.input-group input, .input-group select {
-    padding: 8px;
-    flex: 1;
+.input-group input,
+.input-group select {
+    padding: 10px;
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1rem;
 }
 
 button {
-    padding: 8px 12px;
+    padding: 10px 16px;
+    font-size: 1rem;
     background-color: #27ae60;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
 }
 
 button:hover {
-    background-color: #219150;
-}
-
-a {
-    padding: 8px 12px;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-a:hover {
     background-color: #219150;
 }
 
@@ -69,4 +67,34 @@ a:hover {
 
 .remove-btn:hover {
     background-color: #c0392b;
+}
+
+/* --- TABELLA TURNI (aggiungibile da JS) --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #ecf0f1;
+}
+
+/* --- RESPONSIVE (tablet & desktop) --- */
+@media (min-width: 600px) {
+    .input-group {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    button {
+        width: auto;
+        margin-top: 0;
+    }
 }
